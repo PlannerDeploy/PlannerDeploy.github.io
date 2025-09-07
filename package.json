@@ -5,12 +5,8 @@
   "type": "module",
   "homepage": "https://plannerdeploy.github.io/",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.2",
