@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://plannerdeploy.github.io/",
+  "homepage": "https://PlannerDeploy.github.io/",
   "scripts": {
     "build": "tsc -b && vite build",
     "deploy": "gh-pages -d dist"
