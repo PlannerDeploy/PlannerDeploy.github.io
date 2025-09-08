@@ -1,21 +1,14 @@
-interface CalendarProps {
-    currentDate: Date;
-    setCurrentDate: (date: Date) => void;
-    onDayClick: (date: Date) => void;
-}
+import React from "react";
 
-export function Calendar({ currentDate, setCurrentDate, onDayClick }: CalendarProps) {
+export function Calendar({ currentDate, setCurrentDate, onDayClick }) {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDayOfWeek = (new Date(year, month, 1).getDay() + 6) % 7;
-    // JS: 0 = неділя, 1 = понеділок ...
-    // Ми зсуваємо, щоб 0 = понеділок
 
-    const days: { date: Date; isCurrentMonth: boolean }[] = [];
+    const days = [];
 
-    // дні попереднього місяця
     const prevMonthDays = new Date(year, month, 0).getDate();
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
         days.push({
@@ -24,7 +17,6 @@ export function Calendar({ currentDate, setCurrentDate, onDayClick }: CalendarPr
         });
     }
 
-    // дні поточного місяця
     for (let i = 1; i <= daysInMonth; i++) {
         days.push({
             date: new Date(year, month, i),
@@ -32,7 +24,6 @@ export function Calendar({ currentDate, setCurrentDate, onDayClick }: CalendarPr
         });
     }
 
-    // дні наступного місяця
     while (days.length % 7 !== 0) {
         const nextDay = days.length - (firstDayOfWeek + daysInMonth) + 1;
         days.push({
@@ -41,17 +32,18 @@ export function Calendar({ currentDate, setCurrentDate, onDayClick }: CalendarPr
         });
     }
 
-    const prevMonth = () =>
-        setCurrentDate(new Date(year, month - 1, 1));
-    const nextMonth = () =>
-        setCurrentDate(new Date(year, month + 1, 1));
+    const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
+    const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
     return (
         <div className="calendar">
             <div className="calendar-header">
                 <button onClick={prevMonth}>◀</button>
                 <span>
-                    {currentDate.toLocaleString("uk-UA", { month: "long", year: "numeric" })}
+                    {currentDate.toLocaleString("uk-UA", {
+                        month: "long",
+                        year: "numeric",
+                    })}
                 </span>
                 <button onClick={nextMonth}>▶</button>
             </div>
@@ -62,7 +54,7 @@ export function Calendar({ currentDate, setCurrentDate, onDayClick }: CalendarPr
                     </div>
                 ))}
                 {days.map(({ date, isCurrentMonth }) => {
-                    const dayOfWeek = (date.getDay() + 6) % 7; // 0=понеділок, ..., 6=неділя
+                    const dayOfWeek = (date.getDay() + 6) % 7; 
                     return (
                         <div
                             key={date.toISOString()}

@@ -3,7 +3,7 @@ import { Calendar } from "./components/Calendar";
 import { DayView } from "./components/DayView";
 
 export function App() {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const [currentDate, setCurrentDate] = useState(new Date());
 
     return (

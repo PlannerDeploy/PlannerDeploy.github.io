@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { Entry } from "../models/Entry";
-import type { EntryRecord } from "../models/Entry";
 
-interface DayViewProps {
-    date: Date;
-    onBack: () => void;
-}
-
-export function DayView({ date, onBack }: DayViewProps) {
-    const [entries, setEntries] = useState<EntryRecord[]>([]);
+export function DayView({ date, onBack }) {
+    const [entries, setEntries] = useState([]);
     const [formState, setFormState] = useState({ customerName: "", startTime: "", endTime: "" });
-    const [duration, setDuration] = useState<number | null>(null); // тривалість у хвилинах
+    const [duration, setDuration] = useState(null); // тривалість у хвилинах
 
     const fetchEntries = async () => {
         const startOfDay = new Date(date);
@@ -26,10 +20,12 @@ export function DayView({ date, onBack }: DayViewProps) {
             .lte("end_time", endOfDay.toISOString())
             .order("start_time");
 
-        if (data) setEntries(data as EntryRecord[]);
+        if (data) setEntries(data);
     };
 
-    useEffect(() => { fetchEntries(); }, [date]);
+    useEffect(() => {
+        fetchEntries();
+    }, [date]);
 
     const handleAdd = async () => {
         const { customerName, startTime, endTime } = formState;
@@ -53,9 +49,8 @@ export function DayView({ date, onBack }: DayViewProps) {
         fetchEntries();
     };
 
-
-    const handleChange = (field: "customerName" | "startTime" | "endTime") => (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormState(prev => ({ ...prev, [field]: e.target.value }));
+    const handleChange = (field) => (e) => {
+        setFormState((prev) => ({ ...prev, [field]: e.target.value }));
 
         if (field === "startTime" && duration) {
             const [startHour, startMinute] = e.target.value.split(":").map(Number);
@@ -68,11 +63,11 @@ export function DayView({ date, onBack }: DayViewProps) {
             const hours = endDateTime.getHours().toString().padStart(2, "0");
             const mins = endDateTime.getMinutes().toString().padStart(2, "0");
 
-            setFormState(prev => ({ ...prev, endTime: `${hours}:${mins}` }));
+            setFormState((prev) => ({ ...prev, endTime: `${hours}:${mins}` }));
         }
     };
 
-    const handleSelectDuration = (minutes: number) => {
+    const handleSelectDuration = (minutes) => {
         setDuration(minutes);
 
         if (formState.startTime) {
@@ -86,7 +81,7 @@ export function DayView({ date, onBack }: DayViewProps) {
             const hours = endDateTime.getHours().toString().padStart(2, "0");
             const mins = endDateTime.getMinutes().toString().padStart(2, "0");
 
-            setFormState(prev => ({ ...prev, endTime: `${hours}:${mins}` }));
+            setFormState((prev) => ({ ...prev, endTime: `${hours}:${mins}` }));
         }
     };
 
@@ -96,11 +91,13 @@ export function DayView({ date, onBack }: DayViewProps) {
             month: "long",
             day: "numeric",
         });
-        const weekDayWithSmallFirstLetter = date.toLocaleDateString("uk-UA", {weekday: "long",});
+        const weekDayWithSmallFirstLetter = date.toLocaleDateString("uk-UA", {
+            weekday: "long",
+        });
         const bigFirstLetter = weekDayWithSmallFirstLetter.substring(0, 1).toUpperCase();
-        const weekDayWithoutFirstLetter = weekDayWithSmallFirstLetter.substring(1)
-        return bigFirstLetter + weekDayWithoutFirstLetter + ", "  + dateString;
-    }
+        const weekDayWithoutFirstLetter = weekDayWithSmallFirstLetter.substring(1);
+        return bigFirstLetter + weekDayWithoutFirstLetter + ", " + dateString;
+    };
 
     return (
         <div className="day-view">
@@ -108,11 +105,18 @@ export function DayView({ date, onBack }: DayViewProps) {
             <h2 className="day-title">{weekdayChanger()}</h2>
 
             <ul className="entries-list">
-                {entries.map(e => (
+                {entries.map((e) => (
                     <li key={e.id} className="entry-item">
                         {e.customer_name}:{" "}
-                        {new Date(e.start_time).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}{" "}
-                        - {new Date(e.end_time).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
+                        {new Date(e.start_time).toLocaleTimeString("uk-UA", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })}{" "}
+                        -{" "}
+                        {new Date(e.end_time).toLocaleTimeString("uk-UA", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })}
                     </li>
                 ))}
             </ul>
